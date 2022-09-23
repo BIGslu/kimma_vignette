@@ -786,8 +786,8 @@ sessionInfo()
 
 [R]: https://cran.r-project.org/
 [RStudio]: https://www.rstudio.com/products/rstudio/download/
-[pipeline1]: https://github.com/BIGslu/SEAsnake/blob/main/vignette/SEAsnake_vignette.pdf
-[pipeline2]: https://github.com/BIGslu/tutorials/blob/main/RNAseq/2.Hawn_RNAseq_counts.to.voom.pdf
+[pipeline1]: https://bigslu.github.io/SEAsnake/vignette/SEAsnake_vignette.html
+[pipeline2]: https://bigslu.github.io/tutorials/RNAseq/2.Hawn_RNAseq_counts.to.voom.html
 [kimmaMS]: https://github.com/BIGslu/kimma_MS_public
 [voomWeights]: https://doi.org/10.1186/gb-2014-15-2-r29
 [dream]: https://doi.org/10.1093/bioinformatics/btaa687
