@@ -10,3 +10,16 @@ In particular, kimma provides:
 * Easy incorporation with data visualization and downstream analyses in the `BIGverse` (see below)
 
 ![](figures/intro_diagram-01.png)
+
+## Vignettes
+
+You can find html rendered vignettes for kimma as well as up and downstream analyses at the following links
+
+* [SEAsnake](https://github.com/BIGslu/SEAsnake/blob/main/vignette/SEAsnake_vignette.pdf): An AWS snakemake pipeline for processing bulk RNAseq from fastq to gene counts
+* [Counts to voom](https://bigslu.github.io/tutorials/RNAseq/2.Hawn_RNAseq_counts.to.voom.html): An R based pipeline in `edgeR` and `limma` to assess RNAseq library quality, filter, and normalize data
+* [kimma](https://bigslu.github.io/kimma_vignette/kimma_vignette.html): Linear mixed effects modeling of RNAseq differential gene expression
+* [SEARchways](): Gene set analyses of RNAseq data (under construction)
+* [BIGpicture](): Data visualization related to RNAseq data analysis (under construction)
+
+
+https://bigslu.github.io/kimma_vignette/
