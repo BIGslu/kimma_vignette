@@ -20,6 +20,3 @@ You can find html rendered vignettes for kimma as well as up and downstream anal
 * [kimma](https://bigslu.github.io/kimma_vignette/kimma_vignette.html): Linear mixed effects modeling of RNAseq differential gene expression
 * [SEARchways](): Gene set analyses of RNAseq data (under construction)
 * [BIGpicture](): Data visualization related to RNAseq data analysis (under construction)
-
-
-https://bigslu.github.io/kimma_vignette/

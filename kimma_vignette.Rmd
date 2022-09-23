@@ -393,7 +393,7 @@ We also want to consider the effects of variables that may impact or prevent us 
 To determine if batch should be included in our model, let's first see if it has a large impact on the data in PCA. We see clustering by batch; thus, we have evidence to include batch in the model.
 
 ```{r}
-plot_pca(example.voom, vars = "batch")
+plot_pca(example.voom, scale = TRUE, vars = "batch")
 ```
 
 Next, we run models with and without the batch co-variate. To include co-variates, we add them to the models with `+`. We also set `metrics = TRUE` so that kimma gives us model fit metrics for comparison. For simplicity, we use only the `virus` variable as our main term.
