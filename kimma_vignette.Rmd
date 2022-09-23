@@ -32,7 +32,7 @@ In particular, kimma provides:
 * Multiple model fit measures such as AIC and BIC
 * Easy incorporation with data visualization and downstream analyses in the `BIGverse` (see below)
 
-![](figures/intro_diagram-01.png)
+![](figures/intro_diagram2-01.png)
 
 # 0. Setup
 ## Software and packages
