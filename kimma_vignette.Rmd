@@ -76,7 +76,7 @@ Specifically, this vignette uses bulk human RNA-seq processed from fastq to coun
 
 ## Research question
 
-Our main research question is how human rhinovirus (HRV) infection impacts gene expression. As a secondary question, we are also interested in how individuals with asthma may respond differently to HRV compared to healthy individuals. Thus, we will explore models comparing media and HRV-infected samples (variable named `virus`) in asthmatic and healthy individuals (variable named `asthma`). We will then explore the impacts patient co-variates, paired sample design, and random effects to improve model fit and the detection of differentially expressed genes.
+Our main research question is how human rhinovirus (HRV) infection impacts gene expression. As a secondary question, we are also interested in how individuals with asthma may respond differently to HRV compared to healthy individuals. Thus, we will explore models comparing media and HRV-infected samples (variable named `virus`) in asthmatic and healthy individuals (variable named `asthma`). We will then explore the impacts of patient co-variates, paired sample design, and random effects to improve model fit and the detection of differentially expressed genes.
 
 # 1. Load data
 
@@ -386,6 +386,10 @@ Contrasts may be employed as your main model instead in cases such as:
 * When there is no significance for the interaction term
 * When you are only interested in a subset of the pairwise comparisons encompassed by the interaction term. For example, if you wanted to test a longitudinal study as time point 1 vs 2, 2 vs 3, 3 vs 4, etc
 
+### Why do main model and contrast p-values not match?
+
+If you run a two-level variable (like virus) through kimma contrasts, you may notice that the exact p-values are not the same as those from the main model. This is because contrasts are estimated using the `emmeans` package which has slightly different significance estimation than the main linear model. You do not need to run two-level comparisons through contrasts so you should use the main model results in the `lm`, `lme`, `lmrel` data frames.
+
 ## 2.3: Co-variates (batch)
 
 We also want to consider the effects of variables that may impact or prevent us from seeing our main effects. These co-variates can include patient variables like age and sex as well as technical variables like batch or data quality. As an example here, we will just use batch.
@@ -440,27 +444,27 @@ plot_fit(model_result = lm_virus, x = "lm",
          metrics = "AIC")
 ```
 
-We see that each model is the best fit for a subset of genes. Batch improves the model fit for about half of genes, and this improvement is moderate for some genes (*e.g.* teal dots far from the 1:1 line and mean $\Delta$ AIC = 3.7). Also of importance, the model without batch does not have strong evidence of improved fit for the rest of the genes with a mean $\Delta$ AIC = 1.4.
+We see that each model is the best fit for a subset of genes. Batch improves the model fit for only about 18% of genes, and this improvement is moderate (*e.g.* teal dots farther from the 1:1 line and mean $\Delta$ AIC = 2.3). Also of importance, the model without batch does not have strong evidence of improved fit for the rest of the genes with a mean $\Delta$ AIC = 1.5.
 
 Next, we compare how many genes are significant with and without the co-variate.
 
 ```{r fig.height=4}
-plot_venn_genes(model_result = list("lm"=lm_virus, 
+plot_venn_genes(model_result = list("lm without batch"=lm_virus, 
                                     "lm with batch"=lm_batch), 
                 fdr.cutoff = 0.05) 
 ```
 
-First, consider how many genes are significant for the co-variate itself such as here where batch is not significant for any genes. Next, compare the number of virus-significant genes. Adding batch to the model slightly increases the number of virus significant genes (blue 11 vs green 4).
+First, consider how many genes are significant for the co-variate itself such as here where batch is not significant for any genes. Next, compare the number of virus-significant genes. Adding batch to the model results in the loss of all virus significant genes (green 45 vs blue 0). In this case, this is likely a case of over-fitting with a too complex model for the data set size.
 
 To summarize, the batch co-variate:
 
-* Strongly impacts overall gene expression in PCA
-* Moderately improves model fit for about half of genes
+* Impacts overall gene expression in PCA
+* Moderately improves model fit for a minority of genes
 * Does not significantly impact fit for the other half of genes
 * Significant for 0 genes in a linear model
-* Slightly increases the number of virus-significant genes
+* Reduces the number of virus-significant genes
 
-All evidence except the 0 genes significant for batch point to the inclusion of batch in our model. It is rare that all the evidence points to one conclusion so it must be weighed along with biological and experimental information to determine the final model. In this case, I would choose to NOT include batch since the sample size is very small and model fit differences are also small.
+All evidence except PCA points to not including batch in the model. It is rare that all the evidence points to one conclusion so it must be weighed along with biological and experimental information to determine the final model. In this case, I would choose to NOT include batch since the sample size is very small and model fit differences are also small.
 
 In your data, you may have co-variates with even more conflicting outcomes. In that case, it's important to prioritize model fit and sample size over significant gene counts. You should not include or exclude a co-variate just because it gets you more significant genes for your main terms. This is especially true if the co-variate negatively impacts model fit. 
 
@@ -756,7 +760,7 @@ summarise_kmFit(eqtl$lme,
 plot_genes(dat = example.voom, 
            fdr = lm_virus_asthma$lm, 
            subset.genes = "ENSG00000090097",
-           variables = "virus*asthma", 
+           variables = c("virus","asthma","virus:asthma"), 
            geneID = "geneName",
            colorID="ptID")
 ```
