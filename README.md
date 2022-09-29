@@ -13,8 +13,8 @@ In particular, kimma provides:
 
 ## Vignettes
 
-Main `kimma` package vignette
-https://bigslu.github.io/kimma_vignette/kimma_vignette.html
+Main `kimma` package vignette  
+<https://bigslu.github.io/kimma_vignette/kimma_vignette.html>
 
 Additional tutorials related to RNA-seq data analysis
 
