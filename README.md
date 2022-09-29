@@ -13,10 +13,13 @@ In particular, kimma provides:
 
 ## Vignettes
 
-You can find html rendered vignettes for kimma as well as up and downstream analyses at the following links
+Main `kimma` package vignette
+https://bigslu.github.io/kimma_vignette/kimma_vignette.html
+
+Additional tutorials related to RNA-seq data analysis
 
 1. [fastq to counts](https://bigslu.github.io/tutorials/RNAseq/1.RNAseq_fastq.to.counts.html): Sequence quality filtering, alignment, and counts with [SEAsnake](https://bigslu.github.io/SEAsnake/vignette/SEAsnake_vignette.html): Software to our run pipeline
 2. [Counts to voom](https://bigslu.github.io/tutorials/RNAseq/2.RNAseq_counts.to.voom.html): Count quality filtering and normalization with `edgeR` and `limma`
-3. [Voom to DEG](https://bigslu.github.io/tutorials/RNAseq/3.RNAseq_voom.to.DEG.html): Linear modeling to determine differentially expressed genes (DEG) with `kimma`
-4. [RNAseq modules](https://bigslu.github.io/tutorials/RNAseq/4.RNAseq_modules.html): Gene co-expression modules with `WGCNA`
-5. [Gene set analysis](https://bigslu.github.io/tutorials/RNAseq/5.RNAseq_gene.set.analysis.html): Including hypergeometric enrichment, `enrichr`, gene set enrichment analysis (GSEA), and STRING networks
+3. [Voom to DEG](https://bigslu.github.io/tutorials/RNAseq/3.RNAseq_voom.to.DEG.html): Additional information on how to pick a best fit model
+5. [RNAseq modules](https://bigslu.github.io/tutorials/RNAseq/4.RNAseq_modules.html): Gene co-expression modules with `WGCNA`
+6. [Gene set analysis](https://bigslu.github.io/tutorials/RNAseq/5.RNAseq_gene.set.analysis.html): Including hypergeometric enrichment, `enrichr`, gene set enrichment analysis (GSEA), and STRING networks
