@@ -1519,7 +1519,7 @@ div.tocify {
 <h3 class="subtitle">Linear mixed effects modeling of RNA-seq
 differential gene expression</h3>
 <h4 class="author">Kim Dill-McFarland, <a href="mailto:kadm@uw.edu" class="email">kadm@uw.edu</a></h4>
-<h4 class="date">version September 27, 2022</h4>
+<h4 class="date">version October 13, 2022</h4>
 
 </div>
 
@@ -2308,17 +2308,28 @@ of interest, kimma directly subsets data while modeling. Simply use
 of samples such as testing asthma effects in only virus-infected
 samples.</p>
 <pre class="r"><code>kmFit(dat = example.voom, 
-      model = &quot;~ asthma + (1|ptID)&quot;,
+      model = &quot;~ virus + (1|ptID)&quot;,
       run.lme = TRUE,
       use.weights = TRUE,
-      subset.var = &quot;virus&quot;,
-      subset.lvl = &quot;HRV&quot;)</code></pre>
+      subset.var = list(&quot;asthma&quot;),
+      subset.lvl = list(&quot;healthy&quot;))</code></pre>
+<p>You can specify multiple subset variables and levels using lists
+where the first <code>subset.var</code> corresponds to the first
+<code>subset.lvl</code> vector. For example, this selects all of these
+data.</p>
+<pre class="r"><code>kmFit(dat = example.voom, 
+      model = &quot;~ virus + (1|ptID)&quot;,
+      run.lme = TRUE,
+      use.weights = TRUE,
+      subset.var = list(&quot;virus&quot;, &quot;asthma&quot;),
+      subset.lvl = list(c(&quot;none&quot;, &quot;HRV&quot;),
+                        c(&quot;healthy&quot;, &quot;asthma&quot;)))</code></pre>
 <p>Or run on only a subset of genes with <code>subset.genes</code>.</p>
 <pre class="r"><code>kmFit(dat = example.voom, 
       model = &quot;~ asthma + (1|ptID)&quot;,
       run.lme = TRUE,
       use.weights = TRUE,
-      subset,genes = c(&quot;ENSG00000206418&quot;,&quot;ENSG00000261857&quot;))</code></pre>
+      subset.genes = c(&quot;ENSG00000206418&quot;,&quot;ENSG00000261857&quot;))</code></pre>
 </div>
 <div id="expression-quantitative-loci-eqtl" class="section level3">
 <h3>Expression quantitative loci (eQTL)</h3>

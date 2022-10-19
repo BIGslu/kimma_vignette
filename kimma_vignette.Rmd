@@ -680,11 +680,23 @@ Instead of creating multiple `EList` objects for subsets of interest, kimma dire
 
 ```{r eval=FALSE}
 kmFit(dat = example.voom, 
-      model = "~ asthma + (1|ptID)",
+      model = "~ virus + (1|ptID)",
       run.lme = TRUE,
       use.weights = TRUE,
-      subset.var = "virus",
-      subset.lvl = "HRV")
+      subset.var = list("asthma"),
+      subset.lvl = list("healthy"))
+```
+
+You can specify multiple subset variables and levels using lists where the first `subset.var` corresponds to the first `subset.lvl` vector. For example, this selects all of these data.
+
+```{r eval=FALSE}
+kmFit(dat = example.voom, 
+      model = "~ virus + (1|ptID)",
+      run.lme = TRUE,
+      use.weights = TRUE,
+      subset.var = list("virus", "asthma"),
+      subset.lvl = list(c("none", "HRV"),
+                        c("healthy", "asthma")))
 ```
 
 Or run on only a subset of genes with `subset.genes`.
@@ -694,7 +706,7 @@ kmFit(dat = example.voom,
       model = "~ asthma + (1|ptID)",
       run.lme = TRUE,
       use.weights = TRUE,
-      subset,genes = c("ENSG00000206418","ENSG00000261857"))
+      subset.genes = c("ENSG00000206418","ENSG00000261857"))
 ```
 
 ### Expression quantitative loci (eQTL)
