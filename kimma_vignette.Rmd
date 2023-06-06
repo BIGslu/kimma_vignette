@@ -143,7 +143,7 @@ We run this linear model in kimma using `kmFit`.
 ```{r eval=FALSE}
 lm_virus <- kmFit(dat = example.voom, 
                model = "~ virus", 
-               run.lm = TRUE)
+               run_lm = TRUE)
 ```
 
 ```
@@ -199,7 +199,7 @@ We compare significant genes at FDR < 0.05. The majority of genes are found by b
 # Another BIGpicture function!
 plot_venn_genes(model_result = list("kimma lm"=lm_virus, 
                                     "limma lm"=limma_virus),
-                fdr.cutoff = 0.05)
+                fdr_cutoff = 0.05)
 ```
 
 In parallel analyses of simulated gene expression, kimma and limma achieved the same sensitivity and specificity in simple linear models [Dill-McFarland 2022][kimmaMS]. Thus, the differences seen here are minimal, and we do not have a strong recommendation for one software over the other. Instead, we'll move on to highlight kimma's more complex models and additional features.
@@ -216,8 +216,8 @@ names(example.voom)
 ```{r eval=FALSE}
 lm_weights <- kmFit(dat = example.voom, 
                model = "~ virus", 
-               run.lm = TRUE,
-               use.weights = TRUE)
+               run_lm = TRUE,
+               use_weights = TRUE)
 ```
 
 ```
@@ -233,7 +233,7 @@ We see that in this case, weights have little impact. However, in larger dataset
 ```{r}
 plot_venn_genes(model_result = list("no weights" = lm_virus,
                                     "weights" = lm_weights), 
-                fdr.cutoff = 0.05)
+                fdr_cutoff = 0.05)
 ```
 
 ## 2.2: Multiple main effects (virus & asthma)
@@ -265,8 +265,8 @@ This model now tests both the main effects and their interaction.
 ```{r eval=FALSE}
 lm_virus_asthma <- kmFit(dat = example.voom, 
                          model = "~ virus*asthma", 
-                         run.lm = TRUE,
-                         use.weights = TRUE)
+                         run_lm = TRUE,
+                         use_weights = TRUE)
 ```
 
 ```
@@ -287,22 +287,22 @@ Importantly, a gene with a significant interaction term cannot be assessed for t
 
 ```{r fig.height=4}
 plot_venn_genes(model_result = list("kimma lm"=lm_virus_asthma),
-                fdr.cutoff = 0.2)
+                fdr_cutoff = 0.2)
 ```
 
 If this were our final model, our differentially expressed gene (DEG) list would be all interaction genes (green) as well as the intersect of virus and asthma main terms (blue + yellow). This second group encompasses genes that change with virus similarly in healthy and asthma donors but are always higher in one asthma group.
 
 ### Pairwise contrasts
 
-Another way to model interactions is with pairwise contrasts. Contrasts compare 2 or more groups to all other groups in that variable. For example, we're interested in the 4 groups within the interaction term: `none_healthy`, `none_asthma`, `HRV_healthy`, `HRV_asthma`. We run these comparisons with the same interaction model as above, only now we also set `run.contrast = TRUE`. We will get pairwise comparisons that we're not interested in since all combinations are run but will filter those of interest later on.
+Another way to model interactions is with pairwise contrasts. Contrasts compare 2 or more groups to all other groups in that variable. For example, we're interested in the 4 groups within the interaction term: `none_healthy`, `none_asthma`, `HRV_healthy`, `HRV_asthma`. We run these comparisons with the same interaction model as above, only now we also set `run_contrast = TRUE`. We will get pairwise comparisons that we're not interested in since all combinations are run but will filter those of interest later on.
 
 ```{r eval=FALSE}
 lm_contrast <- kmFit(dat = example.voom, 
                      model = "~ virus*asthma", 
-                     run.lm = TRUE, 
-                     use.weights = TRUE,
-                     run.contrast = TRUE, 
-                     contrast.var = "virus:asthma")
+                     run_lm = TRUE, 
+                     use_weights = TRUE,
+                     run_contrast = TRUE, 
+                     contrast_var = "virus:asthma")
 ```
 
 ```
@@ -329,7 +329,7 @@ Not all of these contrasts are of interest, so we select just the effects of vir
 
 ```{r fig.height=4}
 plot_venn_genes(model_result = list("kimma contrast" = lm_contrast), 
-                fdr.cutoff = 0.3,
+                fdr_cutoff = 0.3,
                 contrasts = c(
                   # Impacts of virus within asthma groups
                   "HRV healthy - none healthy",
@@ -373,7 +373,7 @@ as.data.frame(example.voom$E) %>%
   
   ggplot(aes(x=virus, y=value, color=asthma)) +
   geom_point() +
-  geom_smooth(aes(group=asthma), se=FALSE) +
+  geom_smooth(aes(group=asthma), se=FALSE, method="lm") +
   labs(y="Log2 CPM expression") +
   theme_classic()
 ```
@@ -405,8 +405,8 @@ Next, we run models with and without the batch co-variate. To include co-variate
 ```{r eval=FALSE}
 lm_batch <- kmFit(dat = example.voom, 
                   model = "~ virus + batch", 
-                  run.lm = TRUE,
-                  use.weights = TRUE,
+                  run_lm = TRUE,
+                  use_weights = TRUE,
                   metrics = TRUE)
 ```
 
@@ -421,8 +421,8 @@ Failed: 0 genes
 ```{r eval=FALSE}
 lm_virus <- kmFit(dat = example.voom, 
                   model = "~ virus", 
-                  run.lm = TRUE,
-                  use.weights = TRUE,
+                  run_lm = TRUE,
+                  use_weights = TRUE,
                   metrics = TRUE)
 ```
 
@@ -436,22 +436,22 @@ Failed: 0 genes
 
 We then compare model fits with AIC, which summarize model fit. For more information, see <https://en.wikipedia.org/wiki/Akaike_information_criterion>. In general, a difference in AIC < 2 is considered no evidence of better fit, 2 - 8 is moderate evidence, and > 8 is strong evidence. There are additional metrics also available in kimma including BIC, sigma, and R-squared.
 
-Smaller AIC indicate a better fitting model so genes below the 1:1 line are better fit by the y-axis model (teal). Those above the line are better fit by the x-axis model (red). Throughout this vignette, we put the more complex model as y. Our plotting function also outputs a message with how many genes are best fit by each model and mean and standard deviation of the difference in AIC between the two models.
+Smaller AIC indicate a better fitting model so genes above 0 are better fit by the "x" model and genes below 0 line are better fit by the "y" model. Throughout this tutorial, we put the more complex model as y. Our plotting function also outputs a message with how many genes are best fit by each model and mean and standard deviation of the difference in AIC between the two models.
 
 ```{r}
-plot_fit(model_result = lm_virus, x = "lm",
+plot_fit2(model_result = lm_virus, x = "lm",
          model_result_y = lm_batch, y = "lm", 
          metrics = "AIC")
 ```
 
-We see that each model is the best fit for a subset of genes. Batch improves the model fit for only about 18% of genes, and this improvement is moderate (*e.g.* teal dots farther from the 1:1 line and mean $\Delta$ AIC = 2.3). Also of importance, the model without batch does not have strong evidence of improved fit for the rest of the genes with a mean $\Delta$ AIC = 1.5.
+We see that each model is the best fit for a subset of genes. Batch improves the model fit for only about 18% of genes, and this improvement is moderate (change in AIC from 0 to -11). Also of importance, the model *without* batch does not have evidence of improved fit for the rest of the genes with a mean $\Delta$ AIC around 2.
 
 Next, we compare how many genes are significant with and without the co-variate.
 
 ```{r fig.height=4}
 plot_venn_genes(model_result = list("lm without batch"=lm_virus, 
                                     "lm with batch"=lm_batch), 
-                fdr.cutoff = 0.05) 
+                fdr_cutoff = 0.05) 
 ```
 
 First, consider how many genes are significant for the co-variate itself such as here where batch is not significant for any genes. Next, compare the number of virus-significant genes. Adding batch to the model results in the loss of all virus significant genes (green 45 vs blue 0). In this case, this is likely a case of over-fitting with a too complex model for the data set size.
@@ -495,13 +495,13 @@ Random effects are added to the model with `+ (1|block)` where the block is the 
 ~ virus + (1|ptID)
 ```
 
-In kimma, this is run similarly to a simple model except we add our random term and ask it to `run.lme`.
+In kimma, this is run similarly to a simple model except we add our random term and ask it to `run_lme`.
 
 ```{r eval=FALSE}
 lme_virus <- kmFit(dat = example.voom, 
                    model = "~ virus + (1|ptID)", 
-                   run.lme = TRUE, 
-                   use.weights = TRUE,
+                   run_lme = TRUE, 
+                   use_weights = TRUE,
                    metrics = TRUE)
 ```
 
@@ -513,10 +513,10 @@ Complete: 1000 genes
 Failed: 0 genes
 ```
 
-Comparing models as we did with co-variates, we see that genes are split by best fit with more genes better fit in the simple model (mean $\Delta$ AIC = 3.5). However, we see many more significant genes in the model with the random effect. This illustrates the much improved power of a mixed effects model when you have paired samples. Despite a slight increase in AIC, we would choose the mixed effects model here because 1) differences in AIC are small (2 - 3) and 2) we know the experimental design is paired.
+Comparing models as we did with co-variates, we see that genes are split by best fit with more genes better fit in the simple "x" model (mean $\Delta$ AIC = 3.5). However, we see many more significant genes in the model with the random effect. This illustrates the much improved power of a mixed effects model when you have paired samples. Despite a slight increase in AIC, we would choose the mixed effects model here because 1) differences in AIC are small for the majority of genes and 2) we know the experimental design is paired.
 
 ```{r}
-plot_fit(model_result = lm_virus, x="lm", 
+plot_fit2(model_result = lm_virus, x="lm", 
          model_result_y = lme_virus, y="lme", 
          metrics = "AIC")
 ```
@@ -524,7 +524,7 @@ plot_fit(model_result = lm_virus, x="lm",
 ```{r fig.height=4}
 plot_venn_genes(model_result = list("lm" = lm_virus,
                                     "lme" = lme_virus),
-                fdr.cutoff = 0.05)
+                fdr_cutoff = 0.05)
 ```
 
 ### Compare to limma
@@ -566,7 +566,7 @@ limma_lme <- extract_lmFit(design = mm_lme,
 To compare model fit, limma only provides sigma, or the standard deviation of residuals. Thus, we will use this to compare to kimma here. This metric shows an almost even split in best fit model by gene, all of which are small differences. It is difficult to make a conclusion by sigma alone as it does not take into account as many model fit parameters as metrics like AIC.
 
 ```{r}
-plot_fit(model_result = lme_virus, x = "lme",
+plot_fit2(model_result = lme_virus, x = "lme",
          model_result_y = limma_lme, y = "lm",
          metrics = "sigma")
 ```
@@ -576,7 +576,7 @@ Continuing on, we see that using duplicate correlation in limma (blue) results i
 ```{r}
 plot_venn_genes(model_result = list("kimma" = lme_virus,
                                     "limma" = limma_lme),
-                fdr.cutoff = 0.05)
+                fdr_cutoff = 0.05)
 ```
 
 ### Compare to dream
@@ -603,14 +603,14 @@ Kinship is a summative measure of genetic relatedness. It can be from 0 to 1 wit
 example.kin
 ```
 
-Because it is not a single value per sample or individual, kinship cannot be added to a model with `+ kin`. Instead, it is used as a random effect where you block by individual so the model can identify an individual's kinship values relative to all other individuals in the data set. We fit this type of model with `run.lmerel = TRUE` and providing the kinship matrix.
+Because it is not a single value per sample or individual, kinship cannot be added to a model with `+ kin`. Instead, it is used as a random effect where you block by individual so the model can identify an individual's kinship values relative to all other individuals in the data set. We fit this type of model with `run_lmerel = TRUE` and providing the kinship matrix.
 
 ```{r eval=FALSE}
 lmerel_virus <- kmFit(dat = example.voom, 
                    kin = example.kin, 
                    model = "~ virus + (1|ptID)",
-                   run.lmerel = TRUE, 
-                   use.weights = TRUE,
+                   run_lmerel = TRUE, 
+                   use_weights = TRUE,
                    metrics = TRUE)
 ```
 
@@ -622,10 +622,10 @@ Complete: 1000 genes
 Failed: 0 genes
 ```
 
-Comparing to a mixed effects model without kinship, we see that kinship does not impact model fit with very small $\Delta$ < 1 and even some genes with identical AIC for both models (Best fit = none). We also see kinship has very little impact on DEG detection. Of note, this is not surprising as the example kinship data is artificial and does not reflex the actual relatedness of these patients. 
+Comparing to a mixed effects model without kinship, we see that kinship does not impact model fit with very small $\Delta$ < 2 and even some genes with identical AIC for both models (Best fit = none). We also see kinship has very little impact on DEG detection. Of note, this is not surprising as the example kinship data is artificial and does not reflex the actual relatedness of these patients. 
 
 ```{r}
-plot_fit(model_result = lme_virus, x="lme", 
+plot_fit2(model_result = lme_virus, x="lme", 
          model_result_y = lmerel_virus, y="lmerel", 
          metrics = "AIC")
 ```
@@ -633,7 +633,7 @@ plot_fit(model_result = lme_virus, x="lme",
 ```{r fig.height=4}
 plot_venn_genes(model_result = list("lme" = lme_virus,
                                     "lmerel" = lmerel_virus),
-                fdr.cutoff = 0.05)
+                fdr_cutoff = 0.05)
 ```
 
 # 5. Additional kimma features
@@ -652,10 +652,10 @@ kimma can run more than one model at the same time by setting multiple `run` par
 kmFit(dat = example.voom, 
       kin = example.kin, 
       model = "~ virus + (1|ptID)",
-      run.lm = TRUE,
-      run.lme = TRUE,
-      run.lmerel = TRUE, 
-      use.weights = TRUE)
+      run_lm = TRUE,
+      run_lme = TRUE,
+      run_lmerel = TRUE, 
+      use_weights = TRUE)
 ```
 
 ### Other data inputs
@@ -668,45 +668,45 @@ kmFit(counts = example.voom$E,
       genes = example.voom$genes,
       weights = example.voom$weights,
       model = "~ virus",
-      run.lm = TRUE,
-      use.weights = TRUE)
+      run_lm = TRUE,
+      use_weights = TRUE)
 ```
 
 kimma also allows different patient and library identifiers. By default, `patientID = "ptID"` and `libraryID = "libID"` but these parameters can be changed to whatever names your data use. Note that you will also need to change your model for patient ID's other than ptID.
 
 ### Data subsets
 
-Instead of creating multiple `EList` objects for subsets of interest, kimma directly subsets data while modeling. Simply use `subset.var` and `subset.lvl` to identify a subset of samples such as testing asthma effects in only virus-infected samples.
+Instead of creating multiple `EList` objects for subsets of interest, kimma directly subsets data while modeling. Simply use `subset_var` and `subset_lvl` to identify a subset of samples such as testing asthma effects in only virus-infected samples.
 
 ```{r eval=FALSE}
 kmFit(dat = example.voom, 
       model = "~ virus + (1|ptID)",
-      run.lme = TRUE,
-      use.weights = TRUE,
-      subset.var = list("asthma"),
-      subset.lvl = list("healthy"))
+      run_lme = TRUE,
+      use_weights = TRUE,
+      subset_var = list("asthma"),
+      subset_lvl = list("healthy"))
 ```
 
-You can specify multiple subset variables and levels using lists where the first `subset.var` corresponds to the first `subset.lvl` vector. For example, this selects all of these data.
+You can specify multiple subset variables and levels using lists where the first `subset_var` corresponds to the first `subset_lvl` vector. For example, this selects all of these data.
 
 ```{r eval=FALSE}
 kmFit(dat = example.voom, 
       model = "~ virus + (1|ptID)",
-      run.lme = TRUE,
-      use.weights = TRUE,
-      subset.var = list("virus", "asthma"),
-      subset.lvl = list(c("none", "HRV"),
+      run_lme = TRUE,
+      use_weights = TRUE,
+      subset_var = list("virus", "asthma"),
+      subset_lvl = list(c("none", "HRV"),
                         c("healthy", "asthma")))
 ```
 
-Or run on only a subset of genes with `subset.genes`.
+Or run on only a subset of genes with `subset_genes`.
 
 ```{r eval=FALSE}
 kmFit(dat = example.voom, 
       model = "~ asthma + (1|ptID)",
-      run.lme = TRUE,
-      use.weights = TRUE,
-      subset.genes = c("ENSG00000206418","ENSG00000261857"))
+      run_lme = TRUE,
+      use_weights = TRUE,
+      subset_genes = c("ENSG00000206418","ENSG00000261857"))
 ```
 
 ### Expression quantitative loci (eQTL)
@@ -733,12 +733,12 @@ dat.map
 ```
 
 ```{r eval=FALSE}
-eqtl <- kmFit_eQTL(dat.snp = dat.snp,
-                   dat.map = dat.map,
+eqtl <- kmFit_eQTL(dat_snp = dat.snp,
+                   dat_map = dat.map,
                    dat = example.voom, 
                    model = "~ genotype + (1|ptID)",
-                   run.lme = TRUE,
-                   use.weights = TRUE)
+                   run_lme = TRUE,
+                   use_weights = TRUE)
 ```
 
 ```
@@ -761,7 +761,7 @@ We see that no SNPs are associated gene expression based on the gene-SNP mapping
 
 ```{r}
 summarise_kmFit(eqtl$lme,
-                fdr.cutoff = c(0.05, 0.8, 0.9))
+                fdr_cutoff = c(0.05, 0.8, 0.9))
 ```
 
 # 6. Visualize gene expression
@@ -771,7 +771,7 @@ summarise_kmFit(eqtl$lme,
 ```{r fig.height=9}
 plot_genes(dat = example.voom, 
            fdr = lm_virus_asthma$lm, 
-           subset.genes = "ENSG00000090097",
+           subset_genes = "ENSG00000090097",
            variables = c("virus","asthma","virus:asthma"), 
            geneID = "geneName",
            colorID="ptID")
@@ -788,7 +788,7 @@ example.voom$targets <- example.voom$targets %>%
 
 plot_genes(dat = example.voom, 
            fdr = lm_virus_asthma$lm, 
-           subset.genes = "ENSG00000090097",
+           subset_genes = "ENSG00000090097",
            variables = "interaction", 
            geneID = "geneName",
            colorID="ptID")
