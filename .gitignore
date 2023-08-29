@@ -40,3 +40,11 @@ vignettes/*.pdf
 
 # MAC
 *.DS_Store
+figures/kimma_hex/kimma_1_small.png
+figures/kimma_hex/kimma_2.pdf
+figures/kimma_hex/kimma_2.svg
+figures/kimma_hex/kimma_2_small.png
+figures/kimma_hex/kimma_3_small.png
+figures/kimma_hex/to_print/limma.pdf
+figures/kimma_hex/to_print/tidyverse.pdf
+figures/kimma_hex/to_print/tidyverse.svg
