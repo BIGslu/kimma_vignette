@@ -50,14 +50,21 @@ BiocManager::install(c("edgeR", "limma"))
 
 # GitHub packages
 install.packages("devtools")
-devtools::install_github("BIGslu/BIGverse")
+devtools::install_github("BIGslu/kimma")
+devtools::install_github("BIGslu/BIGpicture")
+devtools::install_github("BIGslu/RNAetc")
+devtools::install_github("BIGslu/SEARchways")
 ```
 
 And load them into your current R session.
 
 ```{r warning=FALSE}
 library(tidyverse)
-library(BIGverse)
+library(kimma)
+library(BIGpicture)
+library(RNAetc)
+library(SEARchways)
+library(limma)
 ```
 
 To ensure reproducibility with this document, set the random seed value.
