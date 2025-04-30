@@ -167,6 +167,31 @@ We see that genes are significant for `virus` at several FDR cutoffs.
 summarise_kmFit(fdr = lm_virus$lm)
 ```
 
+### A note on variable levels and factor order
+
+The order of your variable levels is important for results interpretation. Here, our `virus` variable is a factor with order "none", "HRV". This means positive estimates are genes that are UP with HRV infection.
+
+```{r}
+class(example.voom$targets$virus)
+levels(example.voom$targets$virus)
+```
+
+If your variable is not a factor, the order of levels will be automatically determined alphabetically.
+
+```{r}
+class(example.voom$targets$batch)
+levels(example.voom)
+sort(unique(example.voom$targets$batch))
+```
+
+If you do not like this order, convert variables to factors BEFORE running `kimma` models. For example, if we wanted to switch batch order.
+
+```{r}
+example.voom$targets <- example.voom$targets %>% 
+  mutate(batch = factor(batch, levels=c("2","1")))
+levels(example.voom$targets$batch)
+```
+
 ### Compare to limma
 
 We can compare this to limma (which you've already loaded into R as a dependency of kimma). 
